@@ -7,7 +7,7 @@ import { ButtonOption } from './interface/ButtonOption';
 import { Contact } from './interface/Contact';
 
 const App = () => {
-  const contacts: Contact[] = jsonContacts
+  const contacts: Contact[] = jsonContacts;
   const initialContactsList = contacts.slice(0, 5);
   const [contactsList, setContactsList] = useState(initialContactsList);
   const remainContactsListRef = useRef(contacts.slice(5));
@@ -21,7 +21,7 @@ const App = () => {
     const slicePosition = Math.floor(Math.random() * remainContactsList.length);
     const additionalContact = remainContactsList[slicePosition];
     remainContactsListRef.current = remainContactsList.filter(
-      contact => contact.id !== additionalContact.id
+      (contact) => contact.id !== additionalContact.id
     );
     setAddButtonDisabled(
       remainContactsListRef.current.length === 0 ? true : false
@@ -61,14 +61,12 @@ const App = () => {
   /**
    * delete contact from table
    */
-   const deleteContact = (id: string) => {
-    const deletedContactsList = contactsList.filter(contact => 
-      contact.id !== id
+  const deleteContact = (id: string) => {
+    const deletedContactsList = contactsList.filter(
+      (contact) => contact.id !== id
     );
     remainContactsListRef.current = remainContactsListRef.current.concat(
-      contactsList.filter(contact =>
-        contact.id === id
-      )
+      contactsList.filter((contact) => contact.id === id)
     );
     setAddButtonDisabled(
       remainContactsListRef.current.length === 0 ? true : false
@@ -157,8 +155,15 @@ const App = () => {
             </tr>
           </thead>
           <tbody>
-            {contactsList.map(contact => {
-              return <Contacts key={contact.id} contact={...contact} deleteContactOption={deleteContactOption} deleteContact={(id) => deleteContact(id)} />;
+            {contactsList.map((contact) => {
+              return (
+                <Contacts
+                  key={contact.id}
+                  contact={contact}
+                  deleteContactOption={deleteContactOption}
+                  deleteContact={(id) => deleteContact(id)}
+                />
+              );
             })}
           </tbody>
         </table>

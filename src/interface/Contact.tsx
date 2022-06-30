@@ -1,6 +1,6 @@
 export interface Contact {
   name: string;
-  pictureUrl: URL;
+  pictureUrl: string;
   popularity: number;
   id: string;
 }
