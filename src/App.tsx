@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { useState, useRef } from 'react';
 import './App.css';
-import contacts from './contacts.json';
+import jsonContacts from './contacts.json';
 import Contacts from './components/Contacts';
+import { ButtonOption } from './interface/ButtonOption';
+import { Contact } from './interface/Contact';
 
 const App = () => {
+  const contacts: Contact[] = jsonContacts
   const initialContactsList = contacts.slice(0, 5);
   const [contactsList, setContactsList] = useState(initialContactsList);
   const remainContactsListRef = useRef(contacts.slice(5));
@@ -58,7 +61,7 @@ const App = () => {
   /**
    * delete contact from table
    */
-   const deleteContact = id => {
+   const deleteContact = (id: string) => {
     const deletedContactsList = contactsList.filter(contact => 
       contact.id !== id
     );
@@ -73,7 +76,7 @@ const App = () => {
     setContactsList(deletedContactsList);
   };
 
-  const addContactOption = {
+  const addContactOption: ButtonOption = {
     type: 'button',
     className: 'button add-random-contact-button',
     title: 'Add Random Contact',
@@ -81,21 +84,21 @@ const App = () => {
     onClick: addRandomContact,
   };
 
-  const sortByPopularityOption = {
+  const sortByPopularityOption: ButtonOption = {
     type: 'button',
     className: 'button sort-contact-button',
     title: 'Sort by popularity',
     onClick: sortByPopularity,
   };
 
-  const sortByNameOption = {
+  const sortByNameOption: ButtonOption = {
     type: 'button',
     className: 'button sort-contact-button',
     title: 'Sort by Name',
     onClick: sortByName,
   };
 
-  const deleteContactOption = {
+  const deleteContactOption: ButtonOption = {
     type: 'button',
     className: 'button delete-contact-button',
     title: 'Delete',

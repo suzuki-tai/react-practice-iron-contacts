@@ -6,9 +6,12 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
+    "isolatedModules": false,
     "module": "esnext",
     "target": "es5",
     "jsx": "react",
+    "strict": true,
+    "allowJs": true,
     "lib": ["DOM"]
   },
   "extends": "./tsconfig.paths.json"
