@@ -1,7 +1,8 @@
-import React, { useState, useRef} from 'react';
+import * as React from 'react';
+import { useState, useRef } from 'react';
 import './App.css';
 import contacts from './contacts.json';
-import Contacts from './components/Contacts.js';
+import Contacts from './components/Contacts';
 
 const App = () => {
   const initialContactsList = contacts.slice(0, 5);
