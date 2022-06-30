@@ -3,10 +3,23 @@ import './Contacts.css';
 import { ButtonOption } from '../interface/ButtonOption';
 import { Contact } from '../interface/Contact';
 
+export interface ContactsProps {
+  contact: Contact;
+  deleteContactOption: ButtonOption;
+  deleteContact: Contact;
+}
 /**
  * IronContacts table body
  */
-const Contacts = ({ contact, deleteContactOption, deleteContact }) => {
+const Contacts = ({
+  contact,
+  deleteContactOption,
+  deleteContact,
+}: {
+  contact: Contact;
+  deleteContactOption: ButtonOption;
+  deleteContact: (id: string) => void;
+}) => {
   const wonOscar = getRandom(contact.popularity * 0.01) < 0.7 ? 0 : 1;
   const wonEmmy = getRandom(contact.popularity * 0.001) < 0.3 ? 1 : 0;
 
