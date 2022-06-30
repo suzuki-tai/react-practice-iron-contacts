@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "module": "esnext",
+    "target": "es5",
+    "jsx": "react",
+    "lib": ["DOM"]
+  },
+  "extends": "./tsconfig.paths.json"
+}
