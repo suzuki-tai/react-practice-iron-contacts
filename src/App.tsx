@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { useState, useRef } from 'react';
 import './App.css';
 import jsonContacts from './contacts.json';
@@ -105,7 +105,7 @@ const App = () => {
   return (
     <>
       <div className="App">
-        <h1> IronContacts </h1>
+        <h1 className="page-title"> IronContacts </h1>
         <table className="table table-borderless">
           <tbody>
             <tr>

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 export type ButtonHTMLAttributes = Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,

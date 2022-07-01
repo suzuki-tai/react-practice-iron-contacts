@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import './Contacts.css';
 import { ButtonOption } from '../interface/ButtonOption';
 import { Contact } from '../interface/Contact';

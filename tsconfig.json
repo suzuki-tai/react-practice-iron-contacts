@@ -14,5 +14,10 @@
     "allowJs": true,
     "lib": ["DOM"]
   },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  },
   "extends": "./tsconfig.paths.json"
 }
