@@ -3,15 +3,45 @@ import { useState, useRef } from 'react';
 import './App.css';
 import jsonContacts from './contacts.json';
 import Contacts from './components/Contacts';
-import { ButtonOption } from './interface/ButtonOption';
-import { Contact } from './interface/Contact';
+import { ButtonOption } from '@/interface/ButtonOption';
+import { Contact } from '@/interface/Contact';
+import lo from 'lodash';
+import { ImPlus } from 'react-icons/im';
+import {
+  FaRegTrashAlt,
+  FaSortAlphaDown,
+  FaSortAlphaDownAlt,
+  FaSortNumericDown,
+  FaSortNumericDownAlt,
+} from 'react-icons/fa';
+import { TbRefresh } from 'react-icons/tb';
+import { IconOption } from '@/interface/IconOption';
+import Button from './components/Button';
+import TableHeader from './components/TableHeader';
+import { SortCondition } from '@/interface/SortCondition';
 
 const App = () => {
+  // define contacts list from json
   const contacts: Contact[] = jsonContacts;
+
+  // get initial 5 contacts from contacts list
   const initialContactsList = contacts.slice(0, 5);
+
+  // declare initial state valiable and define setter function
   const [contactsList, setContactsList] = useState(initialContactsList);
+
+  // define remain contacts list as mutable ref object
   const remainContactsListRef = useRef(contacts.slice(5));
+
+  // declare disabled state valiable for add button (initialized false) and define setter function
   const [addButtonDisabled, setAddButtonDisabled] = useState(false);
+
+  // declare initial sort condition (popularity: asc, name: asc)
+  const initialSortCondition: SortCondition = {
+    popularity: 'asc',
+    name: 'asc',
+  };
+  const [sortCondition, setSortCondition] = useState(initialSortCondition);
 
   /**
    * pick up contact randomly and add it to table
@@ -20,12 +50,18 @@ const App = () => {
     const remainContactsList = remainContactsListRef.current;
     const slicePosition = Math.floor(Math.random() * remainContactsList.length);
     const additionalContact = remainContactsList[slicePosition];
+
+    // remove additional contact from remain contacts list
     remainContactsListRef.current = remainContactsList.filter(
       (contact) => contact.id !== additionalContact.id
     );
+
+    // set add button disabled if remain contacts list length equals 0
     setAddButtonDisabled(
       remainContactsListRef.current.length === 0 ? true : false
     );
+
+    // update contacts list to rerender table
     setContactsList(contactsList.concat(additionalContact));
   };
 
@@ -33,9 +69,36 @@ const App = () => {
    * sort contacts list by popularity
    */
   const sortByPopularity = () => {
-    const sortedContactsList = [...contactsList].sort((a, b) => {
-      return b.popularity - a.popularity;
-    });
+    let sortedContactsList: Contact[] = [];
+    if (sortCondition.popularity === 'asc') {
+      sortedContactsList = sortedContactsList.concat(
+        lo.orderBy(
+          [...contactsList],
+          ['popularity', 'name'],
+          ['desc', sortCondition.name]
+        )
+      );
+      setSortCondition({
+        key: 'popularity',
+        popularity: 'desc',
+        name: sortCondition.name,
+      });
+    } else {
+      sortedContactsList = sortedContactsList.concat(
+        lo.orderBy(
+          [...contactsList],
+          ['popularity', 'name'],
+          ['asc', sortCondition.name]
+        )
+      );
+      setSortCondition({
+        key: 'popularity',
+        popularity: 'asc',
+        name: sortCondition.name,
+      });
+    }
+
+    // update contacts list to rerender table
     setContactsList(sortedContactsList);
   };
 
@@ -43,18 +106,32 @@ const App = () => {
    * sort contacts list by name
    */
   const sortByName = () => {
-    const sortedContactsList = [...contactsList].sort((a, b) => {
-      const nameA = a.name.toUpperCase(); // ignore upper and lowercase
-      const nameB = b.name.toUpperCase(); // ignore upper and lowercase
-      if (nameA < nameB) {
-        return -1;
-      } else if (nameA > nameB) {
-        return 1;
-      }
+    let sortedContactsList: Contact[] = [];
+    if (sortCondition.name === 'asc') {
+      sortedContactsList = lo.orderBy(
+        [...contactsList],
+        ['name', 'popularity'],
+        ['asc', sortCondition.popularity]
+      );
+      setSortCondition({
+        key: 'name',
+        popularity: sortCondition.popularity,
+        name: 'desc',
+      });
+    } else {
+      sortedContactsList = lo.orderBy(
+        [...contactsList],
+        ['name', 'popularity'],
+        ['desc', sortCondition.popularity]
+      );
+      setSortCondition({
+        key: 'name',
+        popularity: sortCondition.popularity,
+        name: 'asc',
+      });
+    }
 
-      // names must be equal
-      return 0;
-    });
+    // update contacts list to rerender table
     setContactsList(sortedContactsList);
   };
 
@@ -62,23 +139,71 @@ const App = () => {
    * delete contact from table
    */
   const deleteContact = (id: string) => {
+    // remove selected contact from contacts list
     const deletedContactsList = contactsList.filter(
       (contact) => contact.id !== id
     );
+
+    // add deleted contact to remain contacts list
     remainContactsListRef.current = remainContactsListRef.current.concat(
       contactsList.filter((contact) => contact.id === id)
     );
+
+    // set add button available if remain contacts list length is not equal 0
     setAddButtonDisabled(
       remainContactsListRef.current.length === 0 ? true : false
     );
+
+    // update contacts list to rerender table
     setContactsList(deletedContactsList);
   };
 
+  /**
+   * initialize contact table
+   */
+  const initialize = () => {
+    setContactsList(initialContactsList);
+  };
+
+  // declare icon options
+  const addIconOption: IconOption = {
+    iconType: ImPlus,
+    size: '1.5rem',
+  };
+
+  const deleteIconOption: IconOption = {
+    iconType: FaRegTrashAlt,
+    size: '1.5rem',
+  };
+
+  const sortPopularityIconOption: IconOption = {
+    iconType:
+      sortCondition.popularity === 'asc'
+        ? FaSortNumericDown
+        : FaSortNumericDownAlt,
+    size: '1.5rem',
+    color: sortCondition.key === 'popularity' ? 'black' : '#ccc',
+  };
+
+  const sortNameIconOption: IconOption = {
+    iconType:
+      sortCondition.name === 'asc' ? FaSortAlphaDown : FaSortAlphaDownAlt,
+    size: '1.5rem',
+    color: sortCondition.key === 'name' ? 'black' : '#ccc',
+  };
+
+  const refreshIconOption: IconOption = {
+    iconType: TbRefresh,
+    size: '1.5rem',
+  };
+
+  // declare button options
   const addContactOption: ButtonOption = {
     type: 'button',
     className: 'button add-random-contact-button',
     title: 'Add Random Contact',
     disabled: addButtonDisabled,
+    iconOption: addIconOption,
     onClick: addRandomContact,
   };
 
@@ -86,6 +211,7 @@ const App = () => {
     type: 'button',
     className: 'button sort-contact-button',
     title: 'Sort by popularity',
+    iconOption: sortPopularityIconOption,
     onClick: sortByPopularity,
   };
 
@@ -93,13 +219,23 @@ const App = () => {
     type: 'button',
     className: 'button sort-contact-button',
     title: 'Sort by Name',
+    iconOption: sortNameIconOption,
     onClick: sortByName,
   };
 
   const deleteContactOption: ButtonOption = {
     type: 'button',
     className: 'button delete-contact-button',
-    title: 'Delete',
+    title: 'delete',
+    iconOption: deleteIconOption,
+  };
+
+  const refreshOption: ButtonOption = {
+    type: 'button',
+    className: 'button refresh-button',
+    title: 'Refresh',
+    iconOption: refreshIconOption,
+    onClick: initialize,
   };
 
   return (
@@ -110,49 +246,25 @@ const App = () => {
           <tbody>
             <tr>
               <th scope="row">
-                <button {...addContactOption}>{addContactOption.title}</button>
+                <Button {...addContactOption}>{addContactOption.title}</Button>
               </th>
               <th scope="row">
-                <button {...sortByPopularityOption}>
+                <Button {...sortByPopularityOption}>
                   {sortByPopularityOption.title}
-                </button>
+                </Button>
               </th>
               <th scope="row">
-                <button {...sortByNameOption}>{sortByNameOption.title}</button>
+                <Button {...sortByNameOption}>{sortByNameOption.title}</Button>
+              </th>
+              <th scope="row">
+                <Button {...refreshOption}></Button>
               </th>
             </tr>
           </tbody>
         </table>
         <table className="table table-borderless">
           <thead>
-            <tr>
-              <th scope="col">
-                <h2>Picture</h2>
-              </th>
-              <th scope="col">
-                <h2>Name</h2>
-              </th>
-              <th scope="col">
-                <h2>Popularity</h2>
-              </th>
-              <th scope="col">
-                <h2>
-                  Won
-                  <br />
-                  Oscar
-                </h2>
-              </th>
-              <th scope="col">
-                <h2>
-                  Won
-                  <br />
-                  Emmy
-                </h2>
-              </th>
-              <th scope="col">
-                <h2>Actions</h2>
-              </th>
-            </tr>
+            <TableHeader></TableHeader>
           </thead>
           <tbody>
             {contactsList.map((contact) => {

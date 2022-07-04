@@ -1,4 +1,5 @@
 import React from 'react';
+import { IconOption } from './IconOption';
 
 export type ButtonHTMLAttributes = Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -10,5 +11,7 @@ export interface ButtonOption extends ButtonHTMLAttributes {
   className: string;
   title: string;
   disabled?: boolean;
+  iconOption?: IconOption;
+  label?: string;
   onClick?: () => void;
 }

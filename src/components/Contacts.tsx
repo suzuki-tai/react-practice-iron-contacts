@@ -1,13 +1,18 @@
 import React from 'react';
 import './Contacts.css';
-import { ButtonOption } from '../interface/ButtonOption';
-import { Contact } from '../interface/Contact';
+import { ButtonOption } from '@/interface/ButtonOption';
+import { Contact } from '@/interface/Contact';
+import { GiDiamondTrophy, GiLaurelsTrophy } from 'react-icons/gi';
+import { IconOption } from '@/interface/IconOption';
+import Icon from './Icon';
+import Button from './Button';
 
 export interface ContactsProps {
   contact: Contact;
   deleteContactOption: ButtonOption;
   deleteContact: Contact;
 }
+
 /**
  * IronContacts table body
  */
@@ -27,6 +32,16 @@ const Contacts = ({
     deleteContact(id);
   };
 
+  const oscarTrophyIconOption: IconOption = {
+    iconType: GiDiamondTrophy,
+    size: '1.5rem',
+  };
+
+  const emmyTrophyIconOption: IconOption = {
+    iconType: GiLaurelsTrophy,
+    size: '1.5rem',
+  };
+
   return (
     <>
       <tr key={contact.id}>
@@ -40,20 +55,18 @@ const Contacts = ({
           <h3>{contact.popularity}</h3>
         </th>
         <th scope="row">
-          <h3>{wonOscar === 1 ? '🏆' : ''}</h3>
+          <h3>{wonOscar === 1 ? <Icon {...oscarTrophyIconOption} /> : ''}</h3>
         </th>
         <th scope="row">
-          <h3>{wonEmmy === 1 ? '🏆' : ''}</h3>
+          <h3>{wonEmmy === 1 ? <Icon {...emmyTrophyIconOption} /> : ''}</h3>
         </th>
         <th scope="row">
-          <button
+          <Button
             {...deleteContactOption}
             onClick={() => {
               clickDeleteHandler(contact.id);
             }}
-          >
-            {deleteContactOption.title}
-          </button>
+          ></Button>
         </th>
       </tr>
     </>
