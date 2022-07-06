@@ -1,30 +1,24 @@
 import React from 'react';
-import './Contacts.css';
-import { ButtonOption } from '@/interface/ButtonOption';
-import { Contact } from '@/interface/Contact';
 import { GiDiamondTrophy, GiLaurelsTrophy } from 'react-icons/gi';
-import { IconOption } from '@/interface/IconOption';
 import Icon from './Icon';
 import Button from './Button';
+import { ContactsProps } from '@/interface/ContactProps';
+import { IconOption } from '@/interface/IconOption';
 
-export interface ContactsProps {
-  contact: Contact;
-  deleteContactOption: ButtonOption;
-  deleteContact: Contact;
-}
+import './Contacts.css';
 
 /**
- * IronContacts table body
+ * contacts table row component
+ * @param {Contact} contact　コンタクト(画面表示)
+ * @param {ButtonOption} deleteContactOption 削除ボタンオプション
+ * @param {(id: string) => void} deleteContact 削除ボタンクリックアクション
+ * @return {React.Component}
  */
 const Contacts = ({
   contact,
   deleteContactOption,
   deleteContact,
-}: {
-  contact: Contact;
-  deleteContactOption: ButtonOption;
-  deleteContact: (id: string) => void;
-}) => {
+}: ContactsProps) => {
   const wonOscar = getRandom(contact.popularity * 0.01) < 0.7 ? 0 : 1;
   const wonEmmy = getRandom(contact.popularity * 0.001) < 0.3 ? 1 : 0;
 
@@ -43,33 +37,31 @@ const Contacts = ({
   };
 
   return (
-    <>
-      <tr key={contact.id}>
-        <th scope="row">
-          <img src={contact.pictureUrl} alt={contact.name} />
-        </th>
-        <th scope="row">
-          <h3>{contact.name}</h3>
-        </th>
-        <th scope="row">
-          <h3>{contact.popularity}</h3>
-        </th>
-        <th scope="row">
-          <h3>{wonOscar === 1 ? <Icon {...oscarTrophyIconOption} /> : ''}</h3>
-        </th>
-        <th scope="row">
-          <h3>{wonEmmy === 1 ? <Icon {...emmyTrophyIconOption} /> : ''}</h3>
-        </th>
-        <th scope="row">
-          <Button
-            {...deleteContactOption}
-            onClick={() => {
-              clickDeleteHandler(contact.id);
-            }}
-          ></Button>
-        </th>
-      </tr>
-    </>
+    <tr key={contact.id}>
+      <th scope="row">
+        <img src={contact.pictureUrl} alt={contact.name} />
+      </th>
+      <th scope="row">
+        <h3>{contact.name}</h3>
+      </th>
+      <th scope="row">
+        <h3>{contact.popularity}</h3>
+      </th>
+      <th scope="row">
+        <h3>{wonOscar === 1 ? <Icon {...oscarTrophyIconOption} /> : ''}</h3>
+      </th>
+      <th scope="row">
+        <h3>{wonEmmy === 1 ? <Icon {...emmyTrophyIconOption} /> : ''}</h3>
+      </th>
+      <th scope="row">
+        <Button
+          {...deleteContactOption}
+          onClick={() => {
+            clickDeleteHandler(contact.id);
+          }}
+        ></Button>
+      </th>
+    </tr>
   );
 };
 
